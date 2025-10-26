@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Менеджер аккаунтов</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    padding: 20px;
+  }
+  .container {
+    max-width: 400px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  h2 {
+    text-align: center;
+  }
+  input[type=text], input[type=password] {
+    width: 100%;
+    padding: 8px;
+    margin: 8px 0;
+    box-sizing: border-box;
+  }
+  button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+  #messages {
+    margin-top: 10px;
+    min-height: 40px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Регистрация</h2>
+  <input type="text" id="regPhone" placeholder="Введите номер телефона для регистрации" />
+  <button onclick="register()">Зарегистрироваться</button>
+  
+  <h2>Вход</h2>
+  <input type="text" id="loginPhone" placeholder="Введите номер телефона для входа" />
+  <button onclick="login()">Войти</button>
+  
+  <h2>Действия</h2>
+  <input type="text" id="callPhone" placeholder="Введите номер для звонка" />
+  <button onclick="call()">Позвонить</button>
+  
+  <div id="messages"></div>
+</div>
+
+<script>
+  const accounts = {};
+
+  function showMessage(msg, isError=false) {
+    const messageDiv = document.getElementById('messages');
+    messageDiv.textContent = msg;
+    messageDiv.style.color = isError ? 'red' : 'green';
+  }
+
+  function register() {
+    const phone = document.getElementById('regPhone').value.trim();
+    if (!phone) {
+      showMessage('Пожалуйста, введите номер телефона для регистрации.', true);
+      return;
+    }
+    if (accounts[phone]) {
+      showMessage('Этот номер уже зарегистрирован.', true);
+    } else {
+      accounts[phone] = { loggedIn: false };
+      showMessage('Регистрация прошла успешно!');
+    }
+  }
+
+  function login() {
+    const phone = document.getElementById('loginPhone').value.trim();
+    if (!phone) {
+      showMessage('Пожалуйста, введите номер телефона для входа.', true);
+      return;
+    }
+    if (accounts[phone]) {
+      accounts[phone].loggedIn = true;
+      showMessage(`Вы вошли в аккаунт с номером ${phone}.`);
+    } else {
+      showMessage('Номер не найден. Сначала зарегистрируйтесь.', true);
+    }
+  }
+
+  function call() {
+    const caller = document.getElementById('regPhone').value.trim();
+    const receiver = document.getElementById('callPhone').value.trim();
+    if (!caller || !receiver) {
+      showMessage('Пожалуйста, введите номера обеих сторон.', true);
+      return;
+    }
+    if (!accounts[caller] || !accounts[caller].loggedIn) {
+      showMessage('Ваш аккаунт не зарегистрирован или не вошли в систему.', true);
+      return;
+    }
+    if (accounts[receiver]) {
+      alert(`Звонок с ${caller} на ${receiver} выполнен!`);
+    } else {
+      showMessage('Целевой номер не зарегистрирован.', true);
+    }
+  }
+</script>
+
+</body>
+</html>
